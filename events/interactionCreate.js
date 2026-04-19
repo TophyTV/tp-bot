@@ -164,7 +164,10 @@ const reviewRow = new ActionRowBuilder().addComponents(
   new ButtonBuilder()
     .setCustomId('review_open')
     .setLabel('Leave a Review')
-    .setEmoji('TP')
+    .setEmoji({
+      name: 'TP',
+      id: '1482781213205856316'
+})
     .setStyle(ButtonStyle.Primary)
 );
 
