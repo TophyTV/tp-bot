@@ -132,9 +132,9 @@ const displayName =
 const reviewEmbed = new EmbedBuilder()
   .setColor('#2CEAE7')
   .setAuthor({
-    name: 'New Review! 🤍',
-    iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-  })
+  name: 'New Review! 🤍',
+  iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+})
   .setTitle(displayName)
   .addFields(
     {
