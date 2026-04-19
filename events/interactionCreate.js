@@ -135,11 +135,15 @@ const reviewEmbed = new EmbedBuilder()
   name: 'New Review! ❤️',
   iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
 })
-  .setDescription(comment)
   .addFields(
   {
-    name: 'User',
-    value: interaction.member?.displayName || interaction.user.username,
+    name: '\u200B',
+    value: `**${interaction.member?.displayName || interaction.user.username}**`,
+    inline: false,
+  },
+  {
+    name: '\u200B',
+    value: comment,
     inline: false,
   },
   {
@@ -152,7 +156,7 @@ const reviewEmbed = new EmbedBuilder()
     value: submittedDate,
     inline: true,
   }
-  )
+)
   .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
   .setFooter({
     text: 'TophyProject Reviews',
