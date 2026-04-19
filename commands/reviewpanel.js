@@ -39,6 +39,6 @@ module.exports = {
     const { embed, row } = buildReviewPanel({ title, description, buttonLabel });
 
     await channel.send({ embeds: [embed], components: [row] });
-    await interaction.reply({ content: `Review panel posted in ${channel}.`, ephemeral: true });
+    await interaction.reply({ content: `Review panel posted in ${channel}.`, flags: 64 });
   },
 };

@@ -15,6 +15,6 @@ module.exports = {
   async execute(interaction) {
     const role = interaction.options.getRole('role');
     updateSettings({ supportRoleId: role.id });
-    await interaction.reply({ content: `Support role set to ${role}.`, ephemeral: true });
+    await interaction.reply({ content: `Support role set to ${role}.`, flags: 64 });
   },
 };

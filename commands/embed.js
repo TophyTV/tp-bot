@@ -28,6 +28,6 @@ module.exports = {
       .setTimestamp();
 
     await channel.send({ embeds: [embed] });
-    await interaction.reply({ content: `Embed posted in ${channel}.`, ephemeral: true });
+    await interaction.reply({ content: `Embed posted in ${channel}.`, flags: 64 });
   },
 };

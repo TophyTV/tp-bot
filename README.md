@@ -115,7 +115,7 @@ module.exports = {
     .setDescription('Example custom command'),
 
   async execute(interaction) {
-    await interaction.reply({ content: 'This is my custom command!', ephemeral: true });
+    await interaction.reply({ content: 'This is my custom command!', flags: 64 });
   },
 };
 ```

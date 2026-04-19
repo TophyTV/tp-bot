@@ -17,7 +17,7 @@ module.exports = {
     const isValid = /^#?[0-9A-Fa-f]{6}$/.test(hex);
 
     if (!isValid) {
-      await interaction.reply({ content: 'Please provide a valid 6-digit hex color, like `#5865F2`.', ephemeral: true });
+      await interaction.reply({ content: 'Please provide a valid 6-digit hex color, like `#5865F2`.', flags: 64 });
       return;
     }
 
@@ -25,6 +25,6 @@ module.exports = {
     updateSettings({ embedColor: normalized });
     await interaction.reply({ content: `Embed color updated to \
 
-display: ${normalized}`, ephemeral: true });
+display: ${normalized}`, flags: 64 });
   },
 };

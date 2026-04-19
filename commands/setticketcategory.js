@@ -16,6 +16,6 @@ module.exports = {
   async execute(interaction) {
     const category = interaction.options.getChannel('category');
     updateSettings({ ticketCategoryId: category.id });
-    await interaction.reply({ content: `Ticket category set to **${category.name}**.`, ephemeral: true });
+    await interaction.reply({ content: `Ticket category set to **${category.name}**.`, flags: 64 });
   },
 };

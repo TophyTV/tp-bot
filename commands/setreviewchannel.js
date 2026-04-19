@@ -15,6 +15,6 @@ module.exports = {
   async execute(interaction) {
     const channel = interaction.options.getChannel('channel');
     updateSettings({ reviewChannelId: channel.id });
-    await interaction.reply({ content: `Review channel set to ${channel}.`, ephemeral: true });
+    await interaction.reply({ content: `Review channel set to ${channel}.`, flags: 64 });
   },
 };

@@ -6,6 +6,6 @@ module.exports = {
     .setDescription('Check if the bot is online.'),
 
   async execute(interaction) {
-    await interaction.reply({ content: 'Pong!', ephemeral: true });
+    await interaction.reply({ content: 'Pong!', flags: 64 });
   },
 };

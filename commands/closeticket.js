@@ -7,7 +7,7 @@ module.exports = {
 
   async execute(interaction) {
     if (interaction.channel.type !== ChannelType.GuildText) {
-      await interaction.reply({ content: 'This command can only be used inside a ticket text channel.', ephemeral: true });
+      await interaction.reply({ content: 'This command can only be used inside a ticket text channel.', flags: 64 });
       return;
     }
 
