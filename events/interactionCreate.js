@@ -124,16 +124,18 @@ const stars = draft?.stars || 5;
 const comment = interaction.fields.getTextInputValue('review_comment');
 
 const submittedDate = `<t:${Math.floor(Date.now() / 1000)}:D>`;
-const reviewEmoji = '<a:blueheart:1495354885292425266>';
+const displayName =
+  interaction.member?.displayName ||
+  interaction.user.globalName ||
+  interaction.user.username;
 
 const reviewEmbed = new EmbedBuilder()
   .setColor('#2CEAE7')
   .setAuthor({
-    name: 'New Review!',
+    name: 'New Review! 🤍',
     iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
   })
-  .setTitle(interaction.user.tag)
-  .setDescription(`${reviewEmoji}`)
+  .setTitle(displayName)
   .addFields(
     {
       name: 'Comment',
@@ -162,6 +164,7 @@ const reviewRow = new ActionRowBuilder().addComponents(
   new ButtonBuilder()
     .setCustomId('review_open')
     .setLabel('Leave a Review')
+    .setEmoji('TP')
     .setStyle(ButtonStyle.Primary)
 );
 
