@@ -135,7 +135,7 @@ const reviewEmbed = new EmbedBuilder()
   name: 'New Review! ❤️',
   iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
 })
-  .setDescription(`**${interaction.member?.displayName || interaction.user.username}**\n${'\u200B'}${comment}`)
+  .setDescription(`**${interaction.member?.displayName || interaction.user.username}**\n${comment}`)
   .addFields(
   {
     name: 'Rating',
