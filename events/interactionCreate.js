@@ -26,7 +26,7 @@ module.exports = {
         await command.execute(interaction);
       } catch (error) {
         console.error(`Error executing /${interaction.commandName}:`, error);
-        const payload = { content: 'There was an error while running that command.', ephemeral: true };
+        const payload = { content: 'There was an error while running that command.', flags: 64 };
 
         if (interaction.replied || interaction.deferred) {
           await interaction.followUp(payload);
@@ -45,7 +45,7 @@ module.exports = {
       }
 
       if (interaction.customId === 'ticket_close') {
-        await interaction.reply({ content: 'Closing ticket in 3 seconds...', ephemeral: true });
+        await interaction.reply({ content: 'Closing ticket in 3 seconds...', flags: 64 });
         setTimeout(async () => {
           try {
             await interaction.channel.delete('Ticket closed with button');
@@ -69,7 +69,7 @@ module.exports = {
           ]);
 
         const row = new ActionRowBuilder().addComponents(menu);
-        await interaction.reply({ content: 'Choose your star rating below.', components: [row], ephemeral: true });
+        await interaction.reply({ content: 'Choose your star rating below.', components: [row], flags: 64 });
         return;
       }
     }
@@ -104,7 +104,7 @@ module.exports = {
       if (!reviewChannelId) {
         await interaction.reply({
           content: 'No review channel has been set yet. Run `/setreviewchannel` first.',
-          ephemeral: true,
+          flags: 64,
         });
         return;
       }
@@ -113,7 +113,7 @@ module.exports = {
       if (!reviewChannel) {
         await interaction.reply({
           content: 'The saved review channel could not be found. Set it again with `/setreviewchannel`.',
-          ephemeral: true,
+          flags: 64,
         });
         return;
       }
@@ -164,7 +164,7 @@ const reviewEmbed = new EmbedBuilder()
       await reviewChannel.send({ embeds: [reviewEmbed] });
       reviewDrafts.delete(interaction.user.id);
 
-      await interaction.reply({ content: 'Your review has been submitted. Thank you!', ephemeral: true });
+      await interaction.reply({ content: 'Your review has been submitted. Thank you!', flags: 64 });
       return;
     }
   },
@@ -182,7 +182,7 @@ async function handleTicketOpen(interaction) {
   );
 
   if (existing) {
-    await interaction.reply({ content: `You already have an open ticket: ${existing}`, ephemeral: true });
+    await interaction.reply({ content: `You already have an open ticket: ${existing}`, flags: 64 });
     return;
   }
 
@@ -247,5 +247,5 @@ async function handleTicketOpen(interaction) {
     .setTimestamp();
 
   await ticketChannel.send({ content: supportRoleId ? `<@&${supportRoleId}>` : interaction.user.toString(), embeds: [embed], components: [closeRow] });
-  await interaction.reply({ content: `Your ticket has been created: ${ticketChannel}`, ephemeral: true });
+  await interaction.reply({ content: `Your ticket has been created: ${ticketChannel}`, flags: 64 });
 }
