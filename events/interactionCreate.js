@@ -132,16 +132,20 @@ const displayName =
 const reviewEmbed = new EmbedBuilder()
   .setColor('#2CEAE7')
   .setAuthor({
-  name: 'New Review! 🤍',
+  name: 'New Review! ❤️',
   iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
 })
-  .setTitle(`${interaction.user}`)
   .addFields(
-    {
-      name: 'Comment',
-      value: comment,
-      inline: false,
-    },
+  {
+    name: 'User',
+    value: `${interaction.user}`,
+    inline: true,
+  },
+  {
+    name: '\u200B', // comment (no label)
+    value: comment,
+    inline: false,
+  },
     {
       name: 'Rating',
       value: `${'⭐'.repeat(stars)} (${stars}/5)`,
