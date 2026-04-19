@@ -127,11 +127,12 @@ module.exports = {
 const submittedDate = `<t:${Math.floor(Date.now() / 1000)}:D>`;
 
 const reviewEmbed = new EmbedBuilder()
+  .setColor('#2dc8e4')
   .setAuthor({
     name: `${interaction.user.username}`,
     iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
   })
-  .setTitle('New Review! 💖')
+  .setTitle('New Review! ❤️')
   .addFields(
     {
       name: 'User',
