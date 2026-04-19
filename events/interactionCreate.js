@@ -135,7 +135,7 @@ const reviewEmbed = new EmbedBuilder()
   name: 'New Review! 🤍',
   iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
 })
-  .setTitle(displayName)
+  .setTitle(`<@${interaction.user.id}>`)
   .addFields(
     {
       name: 'Comment',
