@@ -138,11 +138,6 @@ const reviewEmbed = new EmbedBuilder()
   .setDescription(`**${interaction.member?.displayName || interaction.user.username}**\n${comment}`)
   .addFields(
   {
-    name: '\u200B',
-    value: comment,
-    inline: false,
-  },
-  {
     name: 'Rating',
     value: `${'⭐'.repeat(stars)} (${stars}/5)`,
     inline: true,
