@@ -135,6 +135,7 @@ const reviewEmbed = new EmbedBuilder()
   name: 'New Review! ❤️',
   iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
 })
+  .setDescription(comment)
   .addFields(
   {
     name: 'User',
@@ -142,20 +143,15 @@ const reviewEmbed = new EmbedBuilder()
     inline: true,
   },
   {
-    name: '\u200B', // comment (no label)
-    value: comment,
-    inline: false,
+    name: 'Rating',
+    value: `${'⭐'.repeat(stars)} (${stars}/5)`,
+    inline: true,
   },
-    {
-      name: 'Rating',
-      value: `${'⭐'.repeat(stars)} (${stars}/5)`,
-      inline: true,
-    },
-    {
-      name: 'Reviewed',
-      value: submittedDate,
-      inline: true,
-    }
+  {
+    name: 'Reviewed',
+    value: submittedDate,
+    inline: true,
+  }
   )
   .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
   .setFooter({
