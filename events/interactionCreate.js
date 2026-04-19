@@ -122,21 +122,44 @@ module.exports = {
       const stars = draft?.stars || 5;
       const comment = interaction.fields.getTextInputValue('review_comment');
 
-      const reviewEmbed = new EmbedBuilder()
-        .setTitle('New Review')
-        .setAuthor({
-          name: interaction.member.displayName || interaction.user.username,
-          iconURL: interaction.user.displayAvatarURL(),
-        })
-        .setColor(settings.embedColor)
-        .setThumbnail(interaction.user.displayAvatarURL())
-        .addFields(
-          { name: 'Profile', value: `${interaction.user} (${interaction.user.tag})` },
-          { name: 'Rating', value: `${'⭐'.repeat(stars)} (${stars}/5)` },
-          { name: 'Comment', value: comment }
-        )
-        .setFooter({ text: 'TophyProject Reviews' })
-        .setTimestamp();
+      const { EmbedBuilder } = require('discord.js');
+
+const submittedDate = `<t:${Math.floor(Date.now() / 1000)}:D>`;
+
+const reviewEmbed = new EmbedBuilder()
+  .setAuthor({
+    name: `${interaction.user.username}`,
+    iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+  })
+  .setTitle('New Review! 💖')
+  .addFields(
+    {
+      name: 'User',
+      value: `${interaction.user}`,
+      inline: true,
+    },
+    {
+      name: 'Rating',
+      value: `${'⭐'.repeat(stars)} (${stars}/5)`,
+      inline: true,
+    },
+    {
+      name: 'Reviewed',
+      value: submittedDate,
+      inline: true,
+    },
+    {
+      name: 'Comment',
+      value: comment,
+      inline: false,
+    }
+  )
+  .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
+  .setFooter({
+    text: 'TophyProject Reviews',
+    iconURL: interaction.client.user.displayAvatarURL(),
+  })
+  .setTimestamp();
 
       await reviewChannel.send({ embeds: [reviewEmbed] });
       reviewDrafts.delete(interaction.user.id);
