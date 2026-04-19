@@ -1,14 +1,15 @@
 const {
+  Events,
+  EmbedBuilder,
   ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   StringSelectMenuBuilder,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
-  EmbedBuilder,
   ChannelType,
   PermissionFlagsBits,
-  ButtonBuilder,
-  ButtonStyle,
 } = require('discord.js');
 const { readSettings } = require('../utils/storage');
 
@@ -119,25 +120,24 @@ module.exports = {
       }
 
       const draft = reviewDrafts.get(interaction.user.id);
-      const stars = draft?.stars || 5;
-      const comment = interaction.fields.getTextInputValue('review_comment');
-
-      const { EmbedBuilder } = require('discord.js');
+const stars = draft?.stars || 5;
+const comment = interaction.fields.getTextInputValue('review_comment');
 
 const submittedDate = `<t:${Math.floor(Date.now() / 1000)}:D>`;
+const reviewEmoji = '<a:heart:1495354885292425266>'; 
 
 const reviewEmbed = new EmbedBuilder()
-  .setColor('#2dc8e4')
+  .setColor('#2CEAE7')
   .setAuthor({
-    name: `${interaction.user.username}`,
+    name: `New Review! ${reviewEmoji}`,
     iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
   })
-  .setTitle('New Review! ❤️')
+  .setTitle(`${interaction.user}`)
   .addFields(
     {
-      name: 'User',
-      value: `${interaction.user}`,
-      inline: true,
+      name: 'Comment',
+      value: comment,
+      inline: false,
     },
     {
       name: 'Rating',
@@ -148,25 +148,34 @@ const reviewEmbed = new EmbedBuilder()
       name: 'Reviewed',
       value: submittedDate,
       inline: true,
-    },
-    {
-      name: 'Comment',
-      value: comment,
-      inline: false,
     }
   )
   .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
   .setFooter({
     text: 'TophyProject Reviews',
-    iconURL: interaction.client.user.displayAvatarURL(),
+    iconURL: interaction.client.user.displayAvatarURL({ dynamic: true }),
   })
   .setTimestamp();
 
-      await reviewChannel.send({ embeds: [reviewEmbed] });
-      reviewDrafts.delete(interaction.user.id);
+const reviewRow = new ActionRowBuilder().addComponents(
+  new ButtonBuilder()
+    .setCustomId('review_open')
+    .setLabel('Leave a Review')
+    .setStyle(ButtonStyle.Primary)
+);
 
-      await interaction.reply({ content: 'Your review has been submitted. Thank you!', flags: 64 });
-      return;
+await reviewChannel.send({
+  embeds: [reviewEmbed],
+  components: [reviewRow],
+});
+
+reviewDrafts.delete(interaction.user.id);
+
+await interaction.reply({
+  content: 'Your review has been submitted. Thank you!',
+  flags: 64,
+});
+return;
     }
   },
 };
