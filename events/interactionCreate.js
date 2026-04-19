@@ -138,11 +138,6 @@ const reviewEmbed = new EmbedBuilder()
   .setDescription(comment)
   .addFields(
   {
-    name: 'User',
-    value: `${interaction.user}`,
-    inline: false,
-  },
-  {
     name: 'Rating',
     value: `${'⭐'.repeat(stars)} (${stars}/5)`,
     inline: true,
@@ -150,6 +145,11 @@ const reviewEmbed = new EmbedBuilder()
   {
     name: 'Reviewed',
     value: submittedDate,
+    inline: true,
+  },
+  {
+    name: 'User',
+    value: `${interaction.user}`,
     inline: true,
   }
   )
