@@ -39,70 +39,68 @@ module.exports = {
 
       return;
     }
-
-    if (interaction.isButton()) {
-      if (interaction.customId === 'ticket_open') {
-        await handleTicketOpen(interaction);
-        return;
-      }
-
-      if (interaction.customId === 'ticket_close') {
-        await interaction.reply({ content: 'Closing ticket in 3 seconds...', flags: 64 });
-        setTimeout(async () => {
-          try {
-            await interaction.channel.delete('Ticket closed with button');
-          } catch (error) {
-            console.error('Failed to close ticket:', error);
-          }
-        }, 3000);
-        return;
-      }
-
-      if (interaction.customId === 'review_open') {
-
-  const settings = readSettings();
-
   
-  if (settings.reviewCooldownEnabled) {
-    const cooldownHours = settings.reviewCooldownHours || 5;
-    const cooldownMs = cooldownHours * 60 * 60 * 1000;
 
-    const lastReviewTime = reviewCooldowns.get(interaction.user.id);
-    if (lastReviewTime) {
-      const expiresAt = lastReviewTime + cooldownMs;
-      const now = Date.now();
-
-      if (now < expiresAt) {
-        const remainingMs = expiresAt - now;
-        const remainingHours = Math.floor(remainingMs / (1000 * 60 * 60));
-        const remainingMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
-
-        await interaction.reply({
-          content: `You must wait before leaving another review.\nTime remaining: ${remainingHours}h ${remainingMinutes}m.`,
-          flags: 64,
-        });
-        return;
-      }
+    if (interaction.isStringSelectMenu() && interaction.customId === 'ticket_category_select') {
+      const selectedCategory = interaction.values[0];
+      await handleTicketOpen(interaction, selectedCategory);
+      return;
     }
+    if (interaction.isButton()) {
+  if (interaction.customId === 'ticket_close') {
+    await interaction.reply({ content: 'Closing ticket in 3 seconds...', flags: 64 });
+    setTimeout(async () => {
+      try {
+        await interaction.channel.delete('Ticket closed with button');
+      } catch (error) {
+        console.error('Failed to close ticket:', error);
+      }
+    }, 3000);
+    return;
   }
 
-  // ✅ YOUR EXISTING CODE CONTINUES
-  const menu = new StringSelectMenuBuilder()
-    .setCustomId('review_star_select')
-    .setPlaceholder('Choose a star rating')
-    .addOptions([
-      { label: '1 Star', value: '1', description: 'Very poor' },
-      { label: '2 Stars', value: '2', description: 'Needs improvement' },
-      { label: '3 Stars', value: '3', description: 'Average' },
-      { label: '4 Stars', value: '4', description: 'Great' },
-      { label: '5 Stars', value: '5', description: 'Excellent' },
-    ]);
+  if (interaction.customId === 'review_open') {
+    const settings = readSettings();
 
-        const row = new ActionRowBuilder().addComponents(menu);
-        await interaction.reply({ content: 'Choose your star rating below.', components: [row], flags: 64 });
-        return;
+    if (settings.reviewCooldownEnabled) {
+      const cooldownHours = settings.reviewCooldownHours || 5;
+      const cooldownMs = cooldownHours * 60 * 60 * 1000;
+
+      const lastReviewTime = reviewCooldowns.get(interaction.user.id);
+      if (lastReviewTime) {
+        const expiresAt = lastReviewTime + cooldownMs;
+        const now = Date.now();
+
+        if (now < expiresAt) {
+          const remainingMs = expiresAt - now;
+          const remainingHours = Math.floor(remainingMs / (1000 * 60 * 60));
+          const remainingMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+
+          await interaction.reply({
+            content: `You must wait before leaving another review.\nTime remaining: ${remainingHours}h ${remainingMinutes}m.`,
+            flags: 64,
+          });
+          return;
+        }
       }
     }
+
+    const menu = new StringSelectMenuBuilder()
+      .setCustomId('review_star_select')
+      .setPlaceholder('Choose a star rating')
+      .addOptions([
+        { label: '1 Star', value: '1', description: 'Very poor' },
+        { label: '2 Stars', value: '2', description: 'Needs improvement' },
+        { label: '3 Stars', value: '3', description: 'Average' },
+        { label: '4 Stars', value: '4', description: 'Great' },
+        { label: '5 Stars', value: '5', description: 'Excellent' },
+      ]);
+
+    const row = new ActionRowBuilder().addComponents(menu);
+    await interaction.reply({ content: 'Choose your star rating below.', components: [row], flags: 64 });
+    return;
+  }
+}
 
     if (interaction.isStringSelectMenu() && interaction.customId === 'review_star_select') {
       const selectedStars = Number(interaction.values[0]);
@@ -197,6 +195,7 @@ await reviewChannel.send({
   components: [reviewRow],
 });
 
+reviewCooldowns.set(interaction.user.id, Date.now());
 reviewDrafts.delete(interaction.user.id);
 
 await interaction.reply({
@@ -205,19 +204,25 @@ await interaction.reply({
 });
 return;
     }
-  },
-};
 
-async function handleTicketOpen(interaction) {
+async function handleTicketOpen(interaction, selectedCategory = 'general_support') {
   const settings = readSettings();
   const categoryId = settings.ticketCategoryId || null;
   const supportRoleId = settings.supportRoleId || null;
+  const categoryLabels = {
+  general_support: 'general',
+  player_report: 'player-report',
+  purchase_support: 'purchase',
+  staff_report: 'staff-report',
+};
+
+const ticketType = categoryLabels[selectedCategory] || 'general';
 
   const existing = interaction.guild.channels.cache.find(
-    channel =>
-      channel.name === `ticket-${interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '-')}` &&
-      channel.type === ChannelType.GuildText
-  );
+  channel =>
+    channel.name === `ticket-${ticketType}-${interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '-')}` &&
+    channel.type === ChannelType.GuildText
+);
 
   if (existing) {
     await interaction.reply({ content: `You already have an open ticket: ${existing}`, flags: 64 });
@@ -260,7 +265,7 @@ async function handleTicketOpen(interaction) {
   }
 
   const ticketChannel = await interaction.guild.channels.create({
-    name: `ticket-${interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+    name: `ticket-${ticketType}-${interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
     type: ChannelType.GuildText,
     parent: categoryId,
     permissionOverwrites: overwrites,
@@ -277,13 +282,25 @@ async function handleTicketOpen(interaction) {
   const embed = new EmbedBuilder()
     .setTitle('Support Ticket Opened')
     .setDescription([
-      `${interaction.user}, your ticket has been created.`,
-      'Please describe your issue and a staff member will assist you soon.'
-    ].join('\n'))
+     `${interaction.user}, your ticket has been created.`,
+     `Category: **${ticketType}**`,
+     'Please describe your issue and a staff member will assist you soon.'
+   ].join('\n'))
     .setColor(readSettings().embedColor)
-    .setFooter({ text: 'TophyProject Tickets' })
+    .setFooter({ text: 'TophyProjects | Tickets' })
     .setTimestamp();
 
-  await ticketChannel.send({ content: supportRoleId ? `<@&${supportRoleId}>` : interaction.user.toString(), embeds: [embed], components: [closeRow] });
-  await interaction.reply({ content: `Your ticket has been created: ${ticketChannel}`, flags: 64 });
+    await ticketChannel.send({
+    content: supportRoleId ? `<@&${supportRoleId}>` : interaction.user.toString(),
+    embeds: [embed],
+    components: [closeRow]
+  });
+
+  await interaction.reply({
+    content: `Your ticket has been created: ${ticketChannel}`,
+    flags: 64
+  });
 }
+
+  }
+};

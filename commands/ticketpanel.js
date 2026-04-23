@@ -17,12 +17,6 @@ module.exports = {
         .setDescription('Embed description')
         .setRequired(true)
     )
-    .addStringOption(option =>
-      option
-        .setName('button_label')
-        .setDescription('Button label')
-        .setRequired(false)
-    )
     .addChannelOption(option =>
       option
         .setName('channel')
@@ -33,10 +27,9 @@ module.exports = {
   async execute(interaction) {
     const title = interaction.options.getString('title');
     const description = interaction.options.getString('description');
-    const buttonLabel = interaction.options.getString('button_label') || 'Open Ticket';
     const channel = interaction.options.getChannel('channel') || interaction.channel;
 
-    const { embed, row } = buildTicketPanel({ title, description, buttonLabel });
+    const { embed, row } = buildTicketPanel({ title, description });
 
     await channel.send({ embeds: [embed], components: [row] });
     await interaction.reply({ content: `Ticket panel posted in ${channel}.`, flags: 64 });
