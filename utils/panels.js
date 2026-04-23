@@ -10,9 +10,11 @@ function buildTicketPanel({ title, description, buttonLabel }) {
   const settings = readSettings();
 
   const embed = new EmbedBuilder()
-    .setTitle(title)
-    .setDescription(description)
     .setColor(settings.embedColor)
+    .setAuthor({
+      name: `${title} ❤️`,
+    })
+    .setDescription(description)
     .setFooter({ text: 'TophyProject Tickets' })
     .setTimestamp();
 
@@ -20,6 +22,7 @@ function buildTicketPanel({ title, description, buttonLabel }) {
     new ButtonBuilder()
       .setCustomId('ticket_open')
       .setLabel(buttonLabel)
+      .setEmoji('🎟️')
       .setStyle(ButtonStyle.Primary)
   );
 
