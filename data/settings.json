@@ -2,5 +2,7 @@
   "ticketCategoryId": "1482791602312183938",
   "supportRoleId": "1358673903253192884",
   "reviewChannelId": "1482786568979746857",
-  "embedColor": "#1DF0EC"
+  "embedColor": "#1DF0EC",
+  "reviewCooldownEnabled": true,
+  "reviewCooldownHours": 5
 }

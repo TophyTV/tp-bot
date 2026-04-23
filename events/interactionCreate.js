@@ -14,6 +14,7 @@ const {
 const { readSettings } = require('../utils/storage');
 
 const reviewDrafts = new Map();
+const reviewCooldowns = new Map();
 
 module.exports = {
   name: 'interactionCreate',
@@ -58,16 +59,44 @@ module.exports = {
       }
 
       if (interaction.customId === 'review_open') {
-        const menu = new StringSelectMenuBuilder()
-          .setCustomId('review_star_select')
-          .setPlaceholder('Choose a star rating')
-          .addOptions([
-            { label: '1 Star', value: '1', description: 'Very poor' },
-            { label: '2 Stars', value: '2', description: 'Needs improvement' },
-            { label: '3 Stars', value: '3', description: 'Average' },
-            { label: '4 Stars', value: '4', description: 'Great' },
-            { label: '5 Stars', value: '5', description: 'Excellent' },
-          ]);
+
+  const settings = readSettings();
+
+  
+  if (settings.reviewCooldownEnabled) {
+    const cooldownHours = settings.reviewCooldownHours || 5;
+    const cooldownMs = cooldownHours * 60 * 60 * 1000;
+
+    const lastReviewTime = reviewCooldowns.get(interaction.user.id);
+    if (lastReviewTime) {
+      const expiresAt = lastReviewTime + cooldownMs;
+      const now = Date.now();
+
+      if (now < expiresAt) {
+        const remainingMs = expiresAt - now;
+        const remainingHours = Math.floor(remainingMs / (1000 * 60 * 60));
+        const remainingMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+
+        await interaction.reply({
+          content: `You must wait before leaving another review.\nTime remaining: ${remainingHours}h ${remainingMinutes}m.`,
+          flags: 64,
+        });
+        return;
+      }
+    }
+  }
+
+  // ✅ YOUR EXISTING CODE CONTINUES
+  const menu = new StringSelectMenuBuilder()
+    .setCustomId('review_star_select')
+    .setPlaceholder('Choose a star rating')
+    .addOptions([
+      { label: '1 Star', value: '1', description: 'Very poor' },
+      { label: '2 Stars', value: '2', description: 'Needs improvement' },
+      { label: '3 Stars', value: '3', description: 'Average' },
+      { label: '4 Stars', value: '4', description: 'Great' },
+      { label: '5 Stars', value: '5', description: 'Excellent' },
+    ]);
 
         const row = new ActionRowBuilder().addComponents(menu);
         await interaction.reply({ content: 'Choose your star rating below.', components: [row], flags: 64 });
